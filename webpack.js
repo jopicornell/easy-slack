@@ -1,13 +1,8 @@
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 require('shelljs/global')
 var ora = require('ora')
 var webpack = require('webpack')
-
-console.log(
-  '  Tip:\n' +
-  '  Built files are meant to be served over an HTTP server.\n' +
-  '  Opening index.html over file:// won\'t work.\n'
-)
 
 var spinner = ora('building for production...')
 spinner.start()
@@ -18,7 +13,11 @@ const webpackConfig = {
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
+    library: 'easy-slack',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
+  externals: [nodeExternals()],
   plugins: [
     new webpack.IgnorePlugin(/vertx/),
   ],
@@ -31,6 +30,7 @@ const webpackConfig = {
           loader: 'babel-loader',
           options: {
             presets: ['env'],
+            plugins: ["transform-es2015-modules-commonjs"]
           },
         },
       },
